@@ -27,7 +27,7 @@ class JSONAPIRequestTest < ActiveSupport::TestCase
 
     request = JSONAPI::RequestParser.new(
       params,
-      {
+      **{
         context: nil,
         key_formatter: JSONAPI::Formatter.formatter_for(:underscored_key)
       }
@@ -47,7 +47,7 @@ class JSONAPIRequestTest < ActiveSupport::TestCase
 
     request = JSONAPI::RequestParser.new(
       params,
-      {
+      **{
         context: nil,
         key_formatter: JSONAPI::Formatter.formatter_for(:dasherized_key)
       }
@@ -67,7 +67,7 @@ class JSONAPIRequestTest < ActiveSupport::TestCase
 
     request = JSONAPI::RequestParser.new(
       params,
-      {
+      **{
         context: nil,
         key_formatter: JSONAPI::Formatter.formatter_for(:dasherized_key)
       }
@@ -88,7 +88,7 @@ class JSONAPIRequestTest < ActiveSupport::TestCase
 
     request = JSONAPI::RequestParser.new(
       params,
-      {
+      **{
         context: nil,
         key_formatter: JSONAPI::Formatter.formatter_for(:underscored_key)
       }
@@ -110,7 +110,7 @@ class JSONAPIRequestTest < ActiveSupport::TestCase
 
     request = JSONAPI::RequestParser.new(
       params,
-      {
+      **{
         context: nil,
         key_formatter: JSONAPI::Formatter.formatter_for(:dasherized_key)
       }
@@ -133,7 +133,7 @@ class JSONAPIRequestTest < ActiveSupport::TestCase
     e = assert_raises JSONAPI::Exceptions::InvalidField do
       JSONAPI::RequestParser.new(
         params,
-        {
+        **{
           context: nil,
           key_formatter: JSONAPI::Formatter.formatter_for(:dasherized_key)
         }
@@ -157,7 +157,7 @@ class JSONAPIRequestTest < ActiveSupport::TestCase
     e = assert_raises JSONAPI::Exceptions::InvalidResource do
       JSONAPI::RequestParser.new(
         params,
-        {
+        **{
           context: nil,
           key_formatter: JSONAPI::Formatter.formatter_for(:dasherized_key)
         }

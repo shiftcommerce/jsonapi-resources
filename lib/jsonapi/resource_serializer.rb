@@ -26,7 +26,7 @@ module JSONAPI
       @include_directives     ||= JSONAPI::IncludeDirectives.new(@primary_resource_klass, @include)
       @key_formatter          = options.fetch(:key_formatter, JSONAPI.configuration.key_formatter)
       @id_formatter           = ValueFormatter.value_formatter_for(:id)
-      @link_builder           = generate_link_builder(primary_resource_klass, options)
+      @link_builder           = generate_link_builder(primary_resource_klass, **options)
       @always_include_to_one_linkage_data = options.fetch(:always_include_to_one_linkage_data,
                                                           JSONAPI.configuration.always_include_to_one_linkage_data)
       @always_include_to_many_linkage_data = options.fetch(:always_include_to_many_linkage_data,
@@ -50,7 +50,7 @@ module JSONAPI
 
       @included_objects = {}
 
-      process_source_objects(source, @include_directives.include_directives)
+      process_source_objects(source, **@include_directives.include_directives)
 
       primary_objects = []
 
@@ -186,9 +186,9 @@ module JSONAPI
     # requested includes. Fields are controlled fields option for each resource type, such
     # as fields: { people: [:id, :email, :comments], posts: [:id, :title, :author], comments: [:id, :body, :post]}
     # The fields options controls both fields and included links references.
-    def process_source_objects(source, include_directives)
+    def process_source_objects(source, **include_directives)
       if source.respond_to?(:to_ary)
-        source.each { |resource| process_source_objects(resource, include_directives) }
+        source.each { |resource| process_source_objects(resource, **include_directives) }
       else
         return {} if source.nil?
         add_resource(source, include_directives, true)
@@ -522,7 +522,7 @@ module JSONAPI
       existing = @included_objects[type][id]
 
       if existing.nil?
-        obj_hash = object_hash(source, include_directives)
+        obj_hash = object_hash(source, **include_directives)
         @included_objects[type][id] = {
             primary: primary,
             object_hash: obj_hash,
@@ -539,7 +539,7 @@ module JSONAPI
       end
     end
 
-    def generate_link_builder(primary_resource_klass, options)
+    def generate_link_builder(primary_resource_klass, **options)
       LinkBuilder.new(
         base_url: options.fetch(:base_url, ''),
         primary_resource_klass: primary_resource_klass,

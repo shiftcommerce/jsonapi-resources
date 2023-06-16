@@ -100,10 +100,10 @@ module JSONAPI
       end
 
       if JSONAPI.configuration.top_level_links_include_pagination && paginator
-        page_options[:pagination_params] = paginator.links_page_params(page_options.merge(fetched_resources: resource_records))
+        page_options[:pagination_params] = paginator.links_page_params(**page_options.merge(fetched_resources: resource_records))
       end
 
-      return JSONAPI::ResourcesOperationResult.new(:ok, resource_records, page_options)
+      return JSONAPI::ResourcesOperationResult.new(:ok, resource_records, **page_options)
     end
 
     def show
@@ -210,7 +210,7 @@ module JSONAPI
       pagination_params = if paginator && JSONAPI.configuration.top_level_links_include_pagination
                             page_options = {}
                             page_options[:record_count] = record_count if paginator.class.requires_record_count
-                            paginator.links_page_params(page_options.merge(fetched_resources: related_resources))
+                            paginator.links_page_params(**page_options.merge(fetched_resources: related_resources))
                           else
                             {}
                           end
@@ -224,7 +224,7 @@ module JSONAPI
                                                           source_resource,
                                                           relationship_type,
                                                           related_resources,
-                                                          opts)
+                                                          **opts)
     end
 
     def create_resource

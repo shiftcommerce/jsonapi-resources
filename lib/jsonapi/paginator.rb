@@ -7,7 +7,7 @@ module JSONAPI
       # relation
     end
 
-    def links_page_params(_options = {})
+    def links_page_params(**_options)
       # :nocov:
       {}
       # :nocov:
@@ -44,7 +44,7 @@ class OffsetPaginator < JSONAPI::Paginator
     relation.offset(@offset).limit(@limit)
   end
 
-  def links_page_params(options = {})
+  def links_page_params(**options)
     record_count = options[:record_count]
     links_page_params = {}
 
@@ -140,7 +140,7 @@ class PagedPaginator < JSONAPI::Paginator
     relation.offset(offset).limit(@size)
   end
 
-  def links_page_params(options = {})
+  def links_page_params(**options)
     record_count = options[:record_count]
     page_count = calculate_page_count(record_count)
 

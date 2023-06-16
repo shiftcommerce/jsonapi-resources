@@ -3,12 +3,12 @@ module JSONAPI
     class Error < RuntimeError
       attr :error_object_overrides
 
-      def initialize(error_object_overrides = {})
+      def initialize(**error_object_overrides)
         @error_object_overrides = error_object_overrides
       end
 
-      def create_error_object(error_defaults)
-        JSONAPI::Error.new(error_defaults.merge(error_object_overrides))
+      def create_error_object(**error_defaults)
+        JSONAPI::Error.new(**error_defaults.merge(error_object_overrides))
       end
 
       def errors
@@ -21,9 +21,9 @@ module JSONAPI
     class InternalServerError < Error
       attr_accessor :exception
 
-      def initialize(exception, error_object_overrides = {})
+      def initialize(exception, **error_object_overrides)
         @exception = exception
-        super(error_object_overrides)
+        super(**error_object_overrides)
       end
 
       def errors
@@ -46,9 +46,9 @@ module JSONAPI
     class InvalidResource < Error
       attr_accessor :resource
 
-      def initialize(resource, error_object_overrides = {})
+      def initialize(resource, **error_object_overrides)
         @resource = resource
-        super(error_object_overrides)
+        super(**error_object_overrides)
       end
 
       def errors
@@ -64,9 +64,9 @@ module JSONAPI
     class RecordNotFound < Error
       attr_accessor :id
 
-      def initialize(id, error_object_overrides = {})
+      def initialize(id, **error_object_overrides)
         @id = id
-        super(error_object_overrides)
+        super(**error_object_overrides)
       end
 
       def errors
@@ -82,9 +82,9 @@ module JSONAPI
     class UnsupportedMediaTypeError < Error
       attr_accessor :media_type
 
-      def initialize(media_type, error_object_overrides = {})
+      def initialize(media_type, **error_object_overrides)
         @media_type = media_type
-        super(error_object_overrides)
+        super(**error_object_overrides)
       end
 
       def errors
@@ -102,9 +102,9 @@ module JSONAPI
     class NotAcceptableError < Error
       attr_accessor :media_type
 
-      def initialize(media_type, error_object_overrides = {})
+      def initialize(media_type, **error_object_overrides)
         @media_type = media_type
-        super(error_object_overrides)
+        super(**error_object_overrides)
       end
 
       def errors
@@ -123,9 +123,9 @@ module JSONAPI
     class HasManyRelationExists < Error
       attr_accessor :id
 
-      def initialize(id, error_object_overrides = {})
+      def initialize(id, **error_object_overrides)
         @id = id
-        super(error_object_overrides)
+        super(**error_object_overrides)
       end
 
       def errors
@@ -179,9 +179,9 @@ module JSONAPI
     class InvalidFiltersSyntax < Error
       attr_accessor :filters
 
-      def initialize(filters, error_object_overrides = {})
+      def initialize(filters, **error_object_overrides)
         @filters = filters
-        super(error_object_overrides)
+        super(**error_object_overrides)
       end
 
       def errors
@@ -198,9 +198,9 @@ module JSONAPI
     class FilterNotAllowed < Error
       attr_accessor :filter
 
-      def initialize(filter, error_object_overrides = {})
+      def initialize(filter, **error_object_overrides)
         @filter = filter
-        super(error_object_overrides)
+        super(**error_object_overrides)
       end
 
       def errors
@@ -216,10 +216,10 @@ module JSONAPI
     class InvalidFilterValue < Error
       attr_accessor :filter, :value
 
-      def initialize(filter, value, error_object_overrides = {})
+      def initialize(filter, value, **error_object_overrides)
         @filter = filter
         @value = value
-        super(error_object_overrides)
+        super(**error_object_overrides)
       end
 
       def errors
@@ -236,10 +236,10 @@ module JSONAPI
     class InvalidFieldValue < Error
       attr_accessor :field, :value
 
-      def initialize(field, value, error_object_overrides = {})
+      def initialize(field, value, **error_object_overrides)
         @field = field
         @value = value
-        super(error_object_overrides)
+        super(**error_object_overrides)
       end
 
       def errors
@@ -289,9 +289,9 @@ module JSONAPI
     class TypeMismatch < Error
       attr_accessor :type
 
-      def initialize(type, error_object_overrides = {})
+      def initialize(type, **error_object_overrides)
         @type = type
-        super(error_object_overrides)
+        super(**error_object_overrides)
       end
 
       def errors
@@ -307,10 +307,10 @@ module JSONAPI
     class InvalidField < Error
       attr_accessor :field, :type
 
-      def initialize(type, field, error_object_overrides = {})
+      def initialize(type, field, **error_object_overrides)
         @field = field
         @type = type
-        super(error_object_overrides)
+        super(**error_object_overrides)
       end
 
       def errors
@@ -327,10 +327,10 @@ module JSONAPI
     class InvalidInclude < Error
       attr_accessor :relationship, :resource
 
-      def initialize(resource, relationship, error_object_overrides = {})
+      def initialize(resource, relationship, **error_object_overrides)
         @resource = resource
         @relationship = relationship
-        super(error_object_overrides)
+        super(**error_object_overrides)
       end
 
       def errors
@@ -347,10 +347,10 @@ module JSONAPI
     class InvalidSortCriteria < Error
       attr_accessor :sort_criteria, :resource
 
-      def initialize(resource, sort_criteria, error_object_overrides = {})
+      def initialize(resource, sort_criteria, **error_object_overrides)
         @resource = resource
         @sort_criteria = sort_criteria
-        super(error_object_overrides)
+        super(**error_object_overrides)
       end
 
       def errors
@@ -367,9 +367,9 @@ module JSONAPI
     class ParameterNotAllowed < Error
       attr_accessor :param
 
-      def initialize(param, error_object_overrides = {})
+      def initialize(param, **error_object_overrides)
         @param = param
-        super(error_object_overrides)
+        super(**error_object_overrides)
       end
 
       def errors
@@ -385,9 +385,9 @@ module JSONAPI
     class ParameterMissing < Error
       attr_accessor :param
 
-      def initialize(param, error_object_overrides = {})
+      def initialize(param, **error_object_overrides)
         @param = param
-        super(error_object_overrides)
+        super(**error_object_overrides)
       end
 
       def errors
@@ -403,9 +403,9 @@ module JSONAPI
     class KeyNotIncludedInURL < Error
       attr_accessor :key
 
-      def initialize(key, error_object_overrides = {})
+      def initialize(key, **error_object_overrides)
         @key = key
-        super(error_object_overrides)
+        super(**error_object_overrides)
       end
 
       def errors
@@ -433,9 +433,9 @@ module JSONAPI
     class RecordLocked < Error
       attr_accessor :message
 
-      def initialize(message, error_object_overrides = {})
+      def initialize(message, **error_object_overrides)
         @message = message
-        super(error_object_overrides)
+        super(**error_object_overrides)
       end
 
       def errors
@@ -450,13 +450,13 @@ module JSONAPI
     class ValidationErrors < Error
       attr_reader :error_messages, :error_metadata, :resource_relationships, :resource_class
 
-      def initialize(resource, error_object_overrides = {})
+      def initialize(resource, **error_object_overrides)
         @error_messages = resource.model_error_messages
         @error_metadata = resource.validation_error_metadata
         @resource_class = resource.class
         @resource_relationships = resource.class._relationships.keys
         @key_formatter = JSONAPI.configuration.key_formatter
-        super(error_object_overrides)
+        super(**error_object_overrides)
       end
 
       def format_key(key)
@@ -529,9 +529,9 @@ module JSONAPI
     class PageParametersNotAllowed < Error
       attr_accessor :params
 
-      def initialize(params, error_object_overrides = {})
+      def initialize(params, **error_object_overrides)
         @params = params
-        super(error_object_overrides)
+        super(**error_object_overrides)
       end
 
       def errors
@@ -550,10 +550,10 @@ module JSONAPI
     class InvalidPageValue < Error
       attr_accessor :page, :value
 
-      def initialize(page, value, error_object_overrides = {})
+      def initialize(page, value, **error_object_overrides)
         @page = page
         @value = value
-        super(error_object_overrides)
+        super(**error_object_overrides)
       end
 
       def errors

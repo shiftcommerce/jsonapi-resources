@@ -7,7 +7,7 @@ module JSONAPI
                   :resource_klass, :context, :paginator, :source_klass, :source_id,
                   :include_directives, :params, :warnings, :server_error_callbacks
 
-    def initialize(params = nil, options = {})
+    def initialize(params = nil, **options)
       @params = params
       @context = options[:context]
       @key_formatter = options.fetch(:key_formatter, JSONAPI.configuration.key_formatter)

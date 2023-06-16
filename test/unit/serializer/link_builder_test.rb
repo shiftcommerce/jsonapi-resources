@@ -70,7 +70,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
       url_helpers: TestApp.routes.url_helpers,
     }
 
-    builder = JSONAPI::LinkBuilder.new(config)
+    builder = JSONAPI::LinkBuilder.new(**config)
     source  = primary_resource_klass.new(@steve, nil)
     expected_link = "#{ @base_url }/api/v1/people/#{ source.id }"
 
@@ -87,7 +87,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
       url_helpers: TestApp.routes.url_helpers,
     }
 
-    builder = JSONAPI::LinkBuilder.new(config)
+    builder = JSONAPI::LinkBuilder.new(**config)
     source  = primary_resource_klass.new(@great_post, nil)
 
 
@@ -112,7 +112,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
     assert_equal(err, "self_link for Api::Secret::PostResource could not be generated\n")
 
     # should only warn once
-    builder = JSONAPI::LinkBuilder.new(config)
+    builder = JSONAPI::LinkBuilder.new(**config)
     _out, err = capture_subprocess_io do
       link = builder.self_link(source)
       assert_nil link
@@ -133,7 +133,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
       url_helpers: TestApp.routes.url_helpers,
     }
 
-    builder = JSONAPI::LinkBuilder.new(config)
+    builder = JSONAPI::LinkBuilder.new(**config)
 
     # Should not warn if warn_on_missing_routes is false
     JSONAPI.configuration.warn_on_missing_routes = false
@@ -155,7 +155,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
     assert_equal(err, "primary_resources_url for Api::Secret::PostResource could not be generated\n")
 
     # should only warn once
-    builder = JSONAPI::LinkBuilder.new(config)
+    builder = JSONAPI::LinkBuilder.new(**config)
     _out, err = capture_subprocess_io do
       link = builder.primary_resources_url
       assert_nil link
@@ -176,7 +176,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
       url_helpers: TestApp.routes.url_helpers,
     }
 
-    builder       = JSONAPI::LinkBuilder.new(config)
+    builder       = JSONAPI::LinkBuilder.new(**config)
 
     source        = primary_resource_klass.new(@great_post, nil)
 
@@ -203,7 +203,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
     assert_equal(err, "self_link for Api::Secret::PostResource.author(BelongsToOne) could not be generated\n")
 
     # should only warn once
-    builder = JSONAPI::LinkBuilder.new(config)
+    builder = JSONAPI::LinkBuilder.new(**config)
     _out, err = capture_subprocess_io do
       link = builder.relationships_self_link(source, relationship)
       assert_nil link
@@ -224,7 +224,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
       url_helpers: TestApp.routes.url_helpers,
     }
 
-    builder       = JSONAPI::LinkBuilder.new(config)
+    builder       = JSONAPI::LinkBuilder.new(**config)
 
     source        = primary_resource_klass.new(@great_post, nil)
 
@@ -251,7 +251,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
     assert_equal(err, "related_link for Api::Secret::PostResource.author(BelongsToOne) could not be generated\n")
 
     # should only warn once
-    builder = JSONAPI::LinkBuilder.new(config)
+    builder = JSONAPI::LinkBuilder.new(**config)
     _out, err = capture_subprocess_io do
       link = builder.relationships_related_link(source, relationship)
       assert_nil link
@@ -273,7 +273,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
       url_helpers: ApiV2Engine::Engine.routes.url_helpers,
     }
 
-    builder = JSONAPI::LinkBuilder.new(config)
+    builder = JSONAPI::LinkBuilder.new(**config)
     source  = primary_resource_klass.new(@steve, nil)
     expected_link = "#{ @base_url }/api_v2/people/#{ source.id }"
 
@@ -290,7 +290,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
       url_helpers: MyEngine::Engine.routes.url_helpers,
     }
 
-    builder = JSONAPI::LinkBuilder.new(config)
+    builder = JSONAPI::LinkBuilder.new(**config)
     source  = primary_resource_klass.new(@steve, nil)
     expected_link = "#{ @base_url }/boomshaka/api/v1/people/#{ source.id }"
 
@@ -307,7 +307,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
       url_helpers: MyEngine::Engine.routes.url_helpers,
     }
 
-    builder = JSONAPI::LinkBuilder.new(config)
+    builder = JSONAPI::LinkBuilder.new(**config)
     source  = primary_resource_klass.new(@steve, nil)
     expected_link = "#{ @base_url }/boomshaka/admin_api/v1/people/#{ source.id }"
 
@@ -322,7 +322,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
       url_helpers: TestApp.routes.url_helpers,
     }
 
-    builder = JSONAPI::LinkBuilder.new(config)
+    builder = JSONAPI::LinkBuilder.new(**config)
     expected_link = "#{ @base_url }/api/v1/people"
 
     assert_equal expected_link, builder.primary_resources_url
@@ -336,7 +336,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
       url_helpers: ApiV2Engine::Engine.routes.url_helpers,
     }
 
-    builder = JSONAPI::LinkBuilder.new(config)
+    builder = JSONAPI::LinkBuilder.new(**config)
     expected_link = "#{ @base_url }/api_v2/people"
 
     assert_equal expected_link, builder.primary_resources_url
@@ -350,7 +350,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
       url_helpers: MyEngine::Engine.routes.url_helpers,
     }
 
-    builder = JSONAPI::LinkBuilder.new(config)
+    builder = JSONAPI::LinkBuilder.new(**config)
     expected_link = "#{ @base_url }/boomshaka/api/v1/people"
 
     assert_equal expected_link, builder.primary_resources_url
@@ -364,7 +364,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
       url_helpers: TestApp.routes.url_helpers,
     }
 
-    builder       = JSONAPI::LinkBuilder.new(config)
+    builder       = JSONAPI::LinkBuilder.new(**config)
     source        = Api::V1::PersonResource.new(@steve, nil)
     relationship  = Api::V1::PersonResource._relationships[:posts]
     expected_link = "#{ @base_url }/api/v1/people/#{ @steve.id }/relationships/posts"
@@ -381,7 +381,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
       url_helpers: TestApp.routes.url_helpers,
     }
 
-    builder       = JSONAPI::LinkBuilder.new(config)
+    builder       = JSONAPI::LinkBuilder.new(**config)
     source        = Api::V1::PreferencesResource.new(@steves_prefs, nil)
     relationship  = Api::V1::PreferencesResource._relationships[:author]
     expected_link = "#{ @base_url }/api/v1/preferences/relationships/author"
@@ -398,7 +398,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
       url_helpers: TestApp.routes.url_helpers,
     }
 
-    builder       = JSONAPI::LinkBuilder.new(config)
+    builder       = JSONAPI::LinkBuilder.new(**config)
     source        = Api::V1::PreferencesResource.new(@steves_prefs, nil)
     relationship  = Api::V1::PreferencesResource._relationships[:author]
     expected_link = "#{ @base_url }/api/v1/preferences/author"
@@ -415,7 +415,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
       url_helpers: ApiV2Engine::Engine.routes.url_helpers,
     }
 
-    builder       = JSONAPI::LinkBuilder.new(config)
+    builder       = JSONAPI::LinkBuilder.new(**config)
     source        = ApiV2Engine::PersonResource.new(@steve, nil)
     relationship  = ApiV2Engine::PersonResource._relationships[:posts]
     expected_link = "#{ @base_url }/api_v2/people/#{ @steve.id }/relationships/posts"
@@ -432,7 +432,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
       url_helpers: MyEngine::Engine.routes.url_helpers,
     }
 
-    builder       = JSONAPI::LinkBuilder.new(config)
+    builder       = JSONAPI::LinkBuilder.new(**config)
     source        = MyEngine::Api::V1::PersonResource.new(@steve, nil)
     relationship  = MyEngine::Api::V1::PersonResource._relationships[:posts]
     expected_link = "#{ @base_url }/boomshaka/api/v1/people/#{ @steve.id }/relationships/posts"
@@ -449,7 +449,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
       url_helpers: TestApp.routes.url_helpers,
     }
 
-    builder       = JSONAPI::LinkBuilder.new(config)
+    builder       = JSONAPI::LinkBuilder.new(**config)
     source        = Api::V1::PersonResource.new(@steve, nil)
     relationship  = Api::V1::PersonResource._relationships[:posts]
     expected_link = "#{ @base_url }/api/v1/people/#{ @steve.id }/posts"
@@ -466,7 +466,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
       url_helpers: ApiV2Engine::Engine.routes.url_helpers,
     }
 
-    builder       = JSONAPI::LinkBuilder.new(config)
+    builder       = JSONAPI::LinkBuilder.new(**config)
     source        = ApiV2Engine::PersonResource.new(@steve, nil)
     relationship  = ApiV2Engine::PersonResource._relationships[:posts]
     expected_link = "#{ @base_url }/api_v2/people/#{ @steve.id }/posts"
@@ -483,7 +483,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
       url_helpers: MyEngine::Engine.routes.url_helpers,
     }
 
-    builder       = JSONAPI::LinkBuilder.new(config)
+    builder       = JSONAPI::LinkBuilder.new(**config)
     source        = MyEngine::Api::V1::PersonResource.new(@steve, nil)
     relationship  = MyEngine::Api::V1::PersonResource._relationships[:posts]
     expected_link = "#{ @base_url }/boomshaka/api/v1/people/#{ @steve.id }/posts"
@@ -500,14 +500,14 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
       url_helpers: TestApp.routes.url_helpers,
     }
 
-    builder       = JSONAPI::LinkBuilder.new(config)
+    builder       = JSONAPI::LinkBuilder.new(**config)
     source        = Api::V1::PersonResource.new(@steve, nil)
     relationship  = Api::V1::PersonResource._relationships[:posts]
     expected_link = "#{ @base_url }/api/v1/people/#{ @steve.id }/posts?page%5Blimit%5D=12&page%5Boffset%5D=0"
     query         = { page: { offset: 0, limit: 12 } }
 
     assert_equal expected_link,
-                 builder.relationships_related_link(source, relationship, query)
+                 builder.relationships_related_link(source, relationship, **query)
   end
 
   def test_query_link_for_regular_app
@@ -519,7 +519,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
     }
 
     query         = { page: { offset: 0, limit: 12 } }
-    builder       = JSONAPI::LinkBuilder.new(config)
+    builder       = JSONAPI::LinkBuilder.new(**config)
     expected_link = "#{ @base_url }/api/v1/people?page%5Blimit%5D=12&page%5Boffset%5D=0"
 
     assert_equal expected_link, builder.query_link(query)
@@ -534,7 +534,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
     }
 
     query         = { page: { offset: 0, limit: 12 } }
-    builder       = JSONAPI::LinkBuilder.new(config)
+    builder       = JSONAPI::LinkBuilder.new(**config)
     expected_link = "#{ @base_url }/admin_api/v1/people?page%5Blimit%5D=12&page%5Boffset%5D=0"
 
     assert_equal expected_link, builder.query_link(query)
@@ -549,7 +549,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
     }
 
     query         = { page: { offset: 0, limit: 12 } }
-    builder       = JSONAPI::LinkBuilder.new(config)
+    builder       = JSONAPI::LinkBuilder.new(**config)
     expected_link = "#{ @base_url }/dasherized-namespace/v1/people?page%5Blimit%5D=12&page%5Boffset%5D=0"
 
     assert_equal expected_link, builder.query_link(query)
@@ -564,7 +564,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
     }
 
     query         = { page: { offset: 0, limit: 12 } }
-    builder       = JSONAPI::LinkBuilder.new(config)
+    builder       = JSONAPI::LinkBuilder.new(**config)
     expected_link = "#{ @base_url }/api_v2/people?page%5Blimit%5D=12&page%5Boffset%5D=0"
 
     assert_equal expected_link, builder.query_link(query)
@@ -579,7 +579,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
     }
 
     query         = { page: { offset: 0, limit: 12 } }
-    builder       = JSONAPI::LinkBuilder.new(config)
+    builder       = JSONAPI::LinkBuilder.new(**config)
     expected_link = "#{ @base_url }/boomshaka/api/v1/people?page%5Blimit%5D=12&page%5Boffset%5D=0"
 
     assert_equal expected_link, builder.query_link(query)
@@ -594,7 +594,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
     }
 
     query         = { page: { offset: 0, limit: 12 } }
-    builder       = JSONAPI::LinkBuilder.new(config)
+    builder       = JSONAPI::LinkBuilder.new(**config)
     expected_link = "#{ @base_url }/boomshaka/dasherized-namespace/v1/people?page%5Blimit%5D=12&page%5Boffset%5D=0"
 
     assert_equal expected_link, builder.query_link(query)
@@ -609,7 +609,7 @@ class LinkBuilderTest < ActionDispatch::IntegrationTest
     }
 
     query         = { page: { offset: 0, limit: 12 } }
-    builder       = JSONAPI::LinkBuilder.new(config)
+    builder       = JSONAPI::LinkBuilder.new(**config)
     expected_link = "#{ @base_url }/boomshaka/admin_api/v1/people?page%5Blimit%5D=12&page%5Boffset%5D=0"
 
     assert_equal expected_link, builder.query_link(query)

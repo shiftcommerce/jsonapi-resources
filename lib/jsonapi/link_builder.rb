@@ -9,7 +9,7 @@ module JSONAPI
 
     @@url_helper_methods = {}
 
-    def initialize(config = {})
+    def initialize(**config)
       @base_url = config[:base_url]
       @primary_resource_klass = config[:primary_resource_klass]
       @route_formatter = config[:route_formatter]
@@ -45,7 +45,7 @@ module JSONAPI
       "#{ url }?#{ query_params.to_query }"
     end
 
-    def relationships_related_link(source, relationship, query_params = {})
+    def relationships_related_link(source, relationship, **query_params)
       if relationship._routed
         url = "#{ self_link(source) }/#{ route_for_relationship(relationship) }"
         url = "#{ url }?#{ query_params.to_query }" if query_params.present?
