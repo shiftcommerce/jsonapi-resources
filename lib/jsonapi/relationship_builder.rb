@@ -21,7 +21,7 @@ module JSONAPI
 
       relationship = register_relationship(
         relationship_name,
-        relationship_class.new(relationship_name, options)
+        relationship_class.new(relationship_name, **options)
       )
 
       foreign_key = define_foreign_key_setter(relationship.foreign_key)
@@ -60,11 +60,11 @@ module JSONAPI
 
         resource_klass = relationship.resource_klass
 
-        records = resource_klass.apply_includes(records, options)
+        records = resource_klass.apply_includes(records, **options)
 
         filters = options.fetch(:filters, {})
         unless filters.nil? || filters.empty?
-          records = resource_klass.apply_filters(records, filters, options)
+          records = resource_klass.apply_filters(records, filters, **options)
         end
 
         sort_criteria =  options.fetch(:sort_criteria, {})

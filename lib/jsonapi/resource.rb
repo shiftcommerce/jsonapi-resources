@@ -74,39 +74,39 @@ module JSONAPI
       end
     end
 
-    def create_to_many_links(relationship_type, relationship_key_values, options = {})
+    def create_to_many_links(relationship_type, relationship_key_values, **options)
       change :create_to_many_link do
-        _create_to_many_links(relationship_type, relationship_key_values, options)
+        _create_to_many_links(relationship_type, relationship_key_values, **options)
       end
     end
 
-    def replace_to_many_links(relationship_type, relationship_key_values, options = {})
+    def replace_to_many_links(relationship_type, relationship_key_values, **options)
       change :replace_to_many_links do
-        _replace_to_many_links(relationship_type, relationship_key_values, options)
+        _replace_to_many_links(relationship_type, relationship_key_values, **options)
       end
     end
 
-    def replace_to_one_link(relationship_type, relationship_key_value, options = {})
+    def replace_to_one_link(relationship_type, relationship_key_value, **options)
       change :replace_to_one_link do
-        _replace_to_one_link(relationship_type, relationship_key_value, options)
+        _replace_to_one_link(relationship_type, relationship_key_value, **options)
       end
     end
 
-    def replace_polymorphic_to_one_link(relationship_type, relationship_key_value, relationship_key_type, options = {})
+    def replace_polymorphic_to_one_link(relationship_type, relationship_key_value, relationship_key_type, **options)
       change :replace_polymorphic_to_one_link do
-        _replace_polymorphic_to_one_link(relationship_type, relationship_key_value, relationship_key_type, options)
+        _replace_polymorphic_to_one_link(relationship_type, relationship_key_value, relationship_key_type, **options)
       end
     end
 
-    def remove_to_many_link(relationship_type, key, options = {})
+    def remove_to_many_link(relationship_type, key, **options)
       change :remove_to_many_link do
-        _remove_to_many_link(relationship_type, key, options)
+        _remove_to_many_link(relationship_type, key, **options)
       end
     end
 
-    def remove_to_one_link(relationship_type, options = {})
+    def remove_to_one_link(relationship_type, **options)
       change :remove_to_one_link do
-        _remove_to_one_link(relationship_type, options)
+        _remove_to_one_link(relationship_type, **options)
       end
     end
 
@@ -246,7 +246,7 @@ module JSONAPI
       true
     end
 
-    def _create_to_many_links(relationship_type, relationship_key_values, options)
+    def _create_to_many_links(relationship_type, relationship_key_values, **options)
       relationship = self.class._relationships[relationship_type]
 
       # check if relationship_key_values are already members of this relationship
@@ -290,7 +290,7 @@ module JSONAPI
       :completed
     end
 
-    def _replace_to_many_links(relationship_type, relationship_key_values, options)
+    def _replace_to_many_links(relationship_type, relationship_key_values, **options)
       relationship = self.class._relationships[relationship_type]
 
       reflect = reflect_relationship?(relationship, options)
@@ -303,7 +303,7 @@ module JSONAPI
         end
 
         to_add = relationship_key_values - (relationship_key_values & existing)
-        _create_to_many_links(relationship_type, to_add, {})
+        _create_to_many_links(relationship_type, to_add, **{})
 
         @reload_needed = true
       elsif relationship.polymorphic?
@@ -312,7 +312,7 @@ module JSONAPI
           ids = relationship_key_value[:ids]
 
           related_records = relationship_resource_klass
-            .records(options)
+            .records(**options)
             .where({relationship_resource_klass._primary_key => ids})
 
           missed_ids = ids - related_records.pluck(relationship_resource_klass._primary_key)
@@ -334,7 +334,7 @@ module JSONAPI
       :completed
     end
 
-    def _replace_to_one_link(relationship_type, relationship_key_value, options)
+    def _replace_to_one_link(relationship_type, relationship_key_value, **options)
       relationship = self.class._relationships[relationship_type]
 
       send("#{relationship.foreign_key}=", relationship_key_value)
@@ -343,7 +343,7 @@ module JSONAPI
       :completed
     end
 
-    def _replace_polymorphic_to_one_link(relationship_type, key_value, key_type, options)
+    def _replace_polymorphic_to_one_link(relationship_type, key_value, key_type, **options)
       relationship = self.class._relationships[relationship_type.to_sym]
 
       _model.public_send("#{relationship.foreign_key}=", key_value)
@@ -354,7 +354,7 @@ module JSONAPI
       :completed
     end
 
-    def _remove_to_many_link(relationship_type, key, options)
+    def _remove_to_many_link(relationship_type, key, **options)
       relationship = self.class._relationships[relationship_type]
 
       reflect = reflect_relationship?(relationship, options)
@@ -386,7 +386,7 @@ module JSONAPI
       fail JSONAPI::Exceptions::RecordNotFound.new(key)
     end
 
-    def _remove_to_one_link(relationship_type, options)
+    def _remove_to_one_link(relationship_type, **options)
       relationship = self.class._relationships[relationship_type]
 
       send("#{relationship.foreign_key}=", nil)
@@ -531,11 +531,11 @@ module JSONAPI
       def attributes(*attrs)
         options = attrs.extract_options!.dup
         attrs.each do |attr|
-          attribute(attr, options)
+          attribute(attr, **options)
         end
       end
 
-      def attribute(attribute_name, options = {})
+      def attribute(attribute_name, **options)
         attr = attribute_name.to_sym
 
         check_reserved_attribute_name(attr)
@@ -599,7 +599,7 @@ module JSONAPI
       # ```
       # so in order to invoke the right class from subclasses,
       # we should call this method to override it.
-      def model_name(model, options = {})
+      def model_name(model, **options)
         @model_class = nil
         @_model_name = model.to_sym
 
@@ -662,18 +662,18 @@ module JSONAPI
         _relationships.keys | _attributes.keys
       end
 
-      def resolve_relationship_names_to_relations(resource_klass, model_includes, options = {})
+      def resolve_relationship_names_to_relations(resource_klass, model_includes, **options)
         case model_includes
           when Array
             return model_includes.map do |value|
-              resolve_relationship_names_to_relations(resource_klass, value, options)
+              resolve_relationship_names_to_relations(resource_klass, value, **options)
             end
           when Hash
             model_includes.keys.each do |key|
               relationship = resource_klass._relationships[key]
               value = model_includes[key]
               model_includes.delete(key)
-              model_includes[relationship.relation_name(options)] = resolve_relationship_names_to_relations(relationship.resource_klass, value, options)
+              model_includes[relationship.relation_name(options)] = resolve_relationship_names_to_relations(relationship.resource_klass, value, **options)
             end
             return model_includes
           when Symbol
@@ -682,10 +682,10 @@ module JSONAPI
         end
       end
 
-      def apply_includes(records, options = {})
+      def apply_includes(records, **options)
         include_directives = options[:include_directives]
         if include_directives
-          model_includes = resolve_relationship_names_to_relations(self, include_directives.model_includes, options)
+          model_includes = resolve_relationship_names_to_relations(self, include_directives.model_includes, **options)
           records = records.includes(model_includes) if model_includes.present?
         end
 
@@ -741,7 +741,7 @@ module JSONAPI
         joins.join("\n")
       end
 
-      def apply_filter(records, filter, value, options = {})
+      def apply_filter(records, filter, value, **options)
         strategy = _allowed_filters.fetch(filter.to_sym, Hash.new)[:apply]
 
         if strategy
@@ -755,32 +755,32 @@ module JSONAPI
         end
       end
 
-      def apply_filters(records, filters, options = {})
+      def apply_filters(records, filters, **options)
         required_includes = []
 
         if filters
           filters.each do |filter, value|
             if _relationships.include?(filter)
               if _relationships[filter].belongs_to?
-                records = apply_filter(records, _relationships[filter].foreign_key, value, options)
+                records = apply_filter(records, _relationships[filter].foreign_key, value, **options)
               else
                 required_includes.push(filter.to_s)
-                records = apply_filter(records, "#{_relationships[filter].table_name}.#{_relationships[filter].primary_key}", value, options)
+                records = apply_filter(records, "#{_relationships[filter].table_name}.#{_relationships[filter].primary_key}", value, **options)
               end
             else
-              records = apply_filter(records, filter, value, options)
+              records = apply_filter(records, filter, value, **options)
             end
           end
         end
 
         if required_includes.any?
-          records = apply_includes(records, options.merge(include_directives: IncludeDirectives.new(self, required_includes, force_eager_load: true)))
+          records = apply_includes(records, **options.merge(include_directives: IncludeDirectives.new(self, required_includes, force_eager_load: true)))
         end
 
         records
       end
 
-      def apply_included_resources_filters(records, options = {})
+      def apply_included_resources_filters(records, **options)
         include_directives = options[:include_directives]
         return records unless include_directives
         related_directives = include_directives.include_directives.fetch(:include_related)
@@ -795,18 +795,18 @@ module JSONAPI
           filters = config[:include_filters]
           next memo unless filters
 
-          rel_records = filtering_resource.apply_filters(filtering_resource.records(options), filters, options).references(relationship_name)
+          rel_records = filtering_resource.apply_filters(filtering_resource.records(**options), filters, **options).references(relationship_name)
           memo.merge(rel_records)
         end
       end
 
-      def filter_records(filters, options, records = records(options))
-        records = apply_filters(records, filters, options)
-        records = apply_includes(records, options)
-        apply_included_resources_filters(records, options)
+      def filter_records(filters, options, records = records(**options))
+        records = apply_filters(records, filters, **options)
+        records = apply_includes(records, **options)
+        apply_included_resources_filters(records, **options)
       end
 
-      def sort_records(records, order_options, context = {})
+      def sort_records(records, order_options, context)
         apply_sort(records, order_options, context)
       end
 
@@ -815,12 +815,12 @@ module JSONAPI
         records.count(:all)
       end
 
-      def find_count(filters, options = {})
+      def find_count(filters, **options)
         count_records(filter_records(filters, options))
       end
 
       def find(filters, options = {})
-        resources_for(find_records(filters, options), options[:context])
+        resources_for(find_records(filters, **options), options[:context])
       end
 
       def resources_for(records, context)
@@ -830,50 +830,50 @@ module JSONAPI
         end
       end
 
-      def find_by_keys(keys, options = {})
+      def find_by_keys(keys, **options)
         context = options[:context]
-        records = records(options)
-        records = apply_includes(records, options)
+        records = records(**options)
+        records = apply_includes(records, **options)
         models = records.where({_primary_key => keys})
         models.collect do |model|
           self.resource_for_model(model).new(model, context)
         end
       end
 
-      def find_serialized_with_caching(filters_or_source, serializer, options = {})
+      def find_serialized_with_caching(filters_or_source, serializer, **options)
         if filters_or_source.is_a?(ActiveRecord::Relation)
           records = filters_or_source
         elsif _model_class.respond_to?(:all) && _model_class.respond_to?(:arel_table)
-          records = find_records(filters_or_source, options.except(:include_directives))
+          records = find_records(filters_or_source, **options.except(:include_directives))
         else
           records = find(filters_or_source, options)
         end
         cached_resources_for(records, serializer, options)
       end
 
-      def find_by_key(key, options = {})
+      def find_by_key(key, **options)
         context = options[:context]
-        records = find_records({_primary_key => key}, options.except(:paginator, :sort_criteria))
+        records = find_records({_primary_key => key}, **options.except(:paginator, :sort_criteria))
         model = records.first
         fail JSONAPI::Exceptions::RecordNotFound.new(key) if model.nil?
         self.resource_for_model(model).new(model, context)
       end
 
-      def find_by_key_serialized_with_caching(key, serializer, options = {})
+      def find_by_key_serialized_with_caching(key, serializer, **options)
         if _model_class.respond_to?(:all) && _model_class.respond_to?(:arel_table)
-          results = find_serialized_with_caching({_primary_key => key}, serializer, options)
+          results = find_serialized_with_caching({_primary_key => key}, serializer, **options)
           result = results.first
           fail JSONAPI::Exceptions::RecordNotFound.new(key) if result.nil?
           return result
         else
-          resource = find_by_key(key, options)
+          resource = find_by_key(key, **options)
           return cached_resources_for([resource], serializer, options).first
         end
       end
 
       # Override this method if you want to customize the relation for
       # finder methods (find, find_by_key, find_serialized_with_caching)
-      def records(_options = {})
+      def records(**_options)
         _model_class.all
       end
 
@@ -1196,7 +1196,7 @@ module JSONAPI
         resources.values
       end
 
-      def find_records(filters, options = {})
+      def find_records(filters, **options)
         context = options[:context]
 
         records = filter_records(filters, options)

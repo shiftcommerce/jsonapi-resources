@@ -139,7 +139,7 @@ module JSONAPI
     end
 
     # Returns a serialized hash for the source model
-    def object_hash(source, include_directives = {})
+    def object_hash(source, **include_directives)
       obj_hash = {}
 
       if source.is_a?(JSONAPI::CachedResourceFragment)
@@ -170,7 +170,7 @@ module JSONAPI
         attributes = attributes_hash(source, fetchable_fields)
         obj_hash['attributes'] = attributes unless attributes.empty?
 
-        relationships = relationships_hash(source, fetchable_fields, include_directives)
+        relationships = relationships_hash(source, fetchable_fields, **include_directives)
         obj_hash['relationships'] = relationships unless relationships.blank?
 
         meta = meta_hash(source)
@@ -272,7 +272,7 @@ module JSONAPI
       resource && @top_level_sources.include?(top_level_source_key(resource))
     end
 
-    def relationships_hash(source, fetchable_fields, include_directives = {})
+    def relationships_hash(source, fetchable_fields, **include_directives)
       if source.is_a?(CachedResourceFragment)
         return cached_relationships_hash(source, include_directives)
       end
@@ -309,7 +309,7 @@ module JSONAPI
             if include_linkage && !relationships_only
               add_resource(resource, ia)
             elsif include_linked_children || relationships_only
-              relationships_hash(resource, fetchable_fields, ia)
+              relationships_hash(resource, fetchable_fields, **ia)
             end
           end
         end
@@ -531,7 +531,7 @@ module JSONAPI
       else
         include_related = Set.new(include_directives[:include_related].keys)
         unless existing[:includes].superset?(include_related)
-          obj_hash = object_hash(source, include_directives)
+          obj_hash = object_hash(source, **include_directives)
           @included_objects[type][id][:object_hash].deep_merge!(obj_hash)
           @included_objects[type][id][:includes].add(include_related)
           @included_objects[type][id][:primary] = existing[:primary] | primary

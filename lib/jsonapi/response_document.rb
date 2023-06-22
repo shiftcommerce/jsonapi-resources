@@ -1,6 +1,6 @@
 module JSONAPI
   class ResponseDocument
-    def initialize(operation_results, serializer, options = {})
+    def initialize(operation_results, serializer, **options)
       @operation_results = operation_results
       @serializer = serializer
       @options = options

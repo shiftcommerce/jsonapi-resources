@@ -82,7 +82,7 @@ module JSONAPI
       resource_records = if params[:cache_serializer]
         resource_klass.find_serialized_with_caching(verified_filters,
                                                     params[:cache_serializer],
-                                                    find_options)
+                                                    **find_options)
       else
         resource_klass.find(verified_filters, find_options)
       end
@@ -122,9 +122,9 @@ module JSONAPI
       resource_record = if params[:cache_serializer]
         resource_klass.find_by_key_serialized_with_caching(key,
                                                            params[:cache_serializer],
-                                                           find_options)
+                                                           **find_options)
       else
-        resource_klass.find_by_key(key, find_options)
+        resource_klass.find_by_key(key, **find_options)
       end
 
       return JSONAPI::ResourceOperationResult.new(:ok, resource_record)
@@ -187,7 +187,7 @@ module JSONAPI
         related_resources = relationship.resource_klass.find_serialized_with_caching(
           scope,
           params[:cache_serializer],
-          rel_opts
+          **rel_opts
         )
       else
         related_resources = source_resource.public_send(relationship_type, rel_opts)
