@@ -149,7 +149,7 @@ module JSONAPI
         obj_hash['links'] = source.links_json if source.links_json
         obj_hash['attributes'] = source.attributes_json if source.attributes_json
 
-        relationships = cached_relationships_hash(source, include_directives)
+        relationships = cached_relationships_hash(source, **include_directives)
         obj_hash['relationships'] = relationships unless relationships.blank?
 
         obj_hash['meta'] = source.meta_json if source.meta_json
@@ -274,7 +274,7 @@ module JSONAPI
 
     def relationships_hash(source, fetchable_fields, **include_directives)
       if source.is_a?(CachedResourceFragment)
-        return cached_relationships_hash(source, include_directives)
+        return cached_relationships_hash(source, **include_directives)
       end
 
       include_directives[:include_related] ||= {}
@@ -316,7 +316,7 @@ module JSONAPI
       end
     end
 
-    def cached_relationships_hash(source, include_directives)
+    def cached_relationships_hash(source, **include_directives)
       h = source.relationships || {}
       return h unless include_directives.has_key?(:include_related)
 
