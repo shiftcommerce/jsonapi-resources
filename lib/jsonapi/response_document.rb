@@ -1,6 +1,6 @@
 module JSONAPI
   class ResponseDocument
-    def initialize(operation_results, serializer, options = {})
+    def initialize(operation_results, serializer, **options)
       @operation_results = operation_results
       @serializer = serializer
       @options = options
@@ -68,7 +68,7 @@ module JSONAPI
             if result.is_a?(JSONAPI::RelatedResourcesOperationResult)
               relationship = result.source_resource.class._relationships[result._type.to_sym]
               unless relationship.exclude_link?(link_name)
-                link = @serializer.link_builder.relationships_related_link(result.source_resource, relationship, query_params(params))
+                link = @serializer.link_builder.relationships_related_link(result.source_resource, relationship, **query_params(params))
               end
             else
               unless @serializer.link_builder.primary_resource_klass.exclude_link?(link_name)

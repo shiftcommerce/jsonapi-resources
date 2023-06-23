@@ -26,7 +26,7 @@ module JSONAPI
       @include_directives     ||= JSONAPI::IncludeDirectives.new(@primary_resource_klass, @include)
       @key_formatter          = options.fetch(:key_formatter, JSONAPI.configuration.key_formatter)
       @id_formatter           = ValueFormatter.value_formatter_for(:id)
-      @link_builder           = generate_link_builder(primary_resource_klass, options)
+      @link_builder           = generate_link_builder(primary_resource_klass, **options)
       @always_include_to_one_linkage_data = options.fetch(:always_include_to_one_linkage_data,
                                                           JSONAPI.configuration.always_include_to_one_linkage_data)
       @always_include_to_many_linkage_data = options.fetch(:always_include_to_many_linkage_data,
@@ -50,7 +50,7 @@ module JSONAPI
 
       @included_objects = {}
 
-      process_source_objects(source, @include_directives.include_directives)
+      process_source_objects(source, **@include_directives.include_directives)
 
       primary_objects = []
 
@@ -139,7 +139,7 @@ module JSONAPI
     end
 
     # Returns a serialized hash for the source model
-    def object_hash(source, include_directives = {})
+    def object_hash(source, **include_directives)
       obj_hash = {}
 
       if source.is_a?(JSONAPI::CachedResourceFragment)
@@ -149,7 +149,7 @@ module JSONAPI
         obj_hash['links'] = source.links_json if source.links_json
         obj_hash['attributes'] = source.attributes_json if source.attributes_json
 
-        relationships = cached_relationships_hash(source, include_directives)
+        relationships = cached_relationships_hash(source, **include_directives)
         obj_hash['relationships'] = relationships unless relationships.blank?
 
         obj_hash['meta'] = source.meta_json if source.meta_json
@@ -170,7 +170,7 @@ module JSONAPI
         attributes = attributes_hash(source, fetchable_fields)
         obj_hash['attributes'] = attributes unless attributes.empty?
 
-        relationships = relationships_hash(source, fetchable_fields, include_directives)
+        relationships = relationships_hash(source, fetchable_fields, **include_directives)
         obj_hash['relationships'] = relationships unless relationships.blank?
 
         meta = meta_hash(source)
@@ -186,9 +186,9 @@ module JSONAPI
     # requested includes. Fields are controlled fields option for each resource type, such
     # as fields: { people: [:id, :email, :comments], posts: [:id, :title, :author], comments: [:id, :body, :post]}
     # The fields options controls both fields and included links references.
-    def process_source_objects(source, include_directives)
+    def process_source_objects(source, **include_directives)
       if source.respond_to?(:to_ary)
-        source.each { |resource| process_source_objects(resource, include_directives) }
+        source.each { |resource| process_source_objects(resource, **include_directives) }
       else
         return {} if source.nil?
         add_resource(source, include_directives, true)
@@ -272,9 +272,9 @@ module JSONAPI
       resource && @top_level_sources.include?(top_level_source_key(resource))
     end
 
-    def relationships_hash(source, fetchable_fields, include_directives = {})
+    def relationships_hash(source, fetchable_fields, **include_directives)
       if source.is_a?(CachedResourceFragment)
-        return cached_relationships_hash(source, include_directives)
+        return cached_relationships_hash(source, **include_directives)
       end
 
       include_directives[:include_related] ||= {}
@@ -309,14 +309,14 @@ module JSONAPI
             if include_linkage && !relationships_only
               add_resource(resource, ia)
             elsif include_linked_children || relationships_only
-              relationships_hash(resource, fetchable_fields, ia)
+              relationships_hash(resource, fetchable_fields, **ia)
             end
           end
         end
       end
     end
 
-    def cached_relationships_hash(source, include_directives)
+    def cached_relationships_hash(source, **include_directives)
       h = source.relationships || {}
       return h unless include_directives.has_key?(:include_related)
 
@@ -522,7 +522,7 @@ module JSONAPI
       existing = @included_objects[type][id]
 
       if existing.nil?
-        obj_hash = object_hash(source, include_directives)
+        obj_hash = object_hash(source, **include_directives)
         @included_objects[type][id] = {
             primary: primary,
             object_hash: obj_hash,
@@ -531,7 +531,7 @@ module JSONAPI
       else
         include_related = Set.new(include_directives[:include_related].keys)
         unless existing[:includes].superset?(include_related)
-          obj_hash = object_hash(source, include_directives)
+          obj_hash = object_hash(source, **include_directives)
           @included_objects[type][id][:object_hash].deep_merge!(obj_hash)
           @included_objects[type][id][:includes].add(include_related)
           @included_objects[type][id][:primary] = existing[:primary] | primary
@@ -539,7 +539,7 @@ module JSONAPI
       end
     end
 
-    def generate_link_builder(primary_resource_klass, options)
+    def generate_link_builder(primary_resource_klass, **options)
       LinkBuilder.new(
         base_url: options.fetch(:base_url, ''),
         primary_resource_klass: primary_resource_klass,

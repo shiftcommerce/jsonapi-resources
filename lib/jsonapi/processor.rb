@@ -82,7 +82,7 @@ module JSONAPI
       resource_records = if params[:cache_serializer]
         resource_klass.find_serialized_with_caching(verified_filters,
                                                     params[:cache_serializer],
-                                                    find_options)
+                                                    **find_options)
       else
         resource_klass.find(verified_filters, find_options)
       end
@@ -100,10 +100,10 @@ module JSONAPI
       end
 
       if JSONAPI.configuration.top_level_links_include_pagination && paginator
-        page_options[:pagination_params] = paginator.links_page_params(page_options.merge(fetched_resources: resource_records))
+        page_options[:pagination_params] = paginator.links_page_params(**page_options.merge(fetched_resources: resource_records))
       end
 
-      return JSONAPI::ResourcesOperationResult.new(:ok, resource_records, page_options)
+      return JSONAPI::ResourcesOperationResult.new(:ok, resource_records, **page_options)
     end
 
     def show
@@ -122,9 +122,9 @@ module JSONAPI
       resource_record = if params[:cache_serializer]
         resource_klass.find_by_key_serialized_with_caching(key,
                                                            params[:cache_serializer],
-                                                           find_options)
+                                                           **find_options)
       else
-        resource_klass.find_by_key(key, find_options)
+        resource_klass.find_by_key(key, **find_options)
       end
 
       return JSONAPI::ResourceOperationResult.new(:ok, resource_record)
@@ -187,7 +187,7 @@ module JSONAPI
         related_resources = relationship.resource_klass.find_serialized_with_caching(
           scope,
           params[:cache_serializer],
-          rel_opts
+          **rel_opts
         )
       else
         related_resources = source_resource.public_send(relationship_type, rel_opts)
@@ -210,7 +210,7 @@ module JSONAPI
       pagination_params = if paginator && JSONAPI.configuration.top_level_links_include_pagination
                             page_options = {}
                             page_options[:record_count] = record_count if paginator.class.requires_record_count
-                            paginator.links_page_params(page_options.merge(fetched_resources: related_resources))
+                            paginator.links_page_params(**page_options.merge(fetched_resources: related_resources))
                           else
                             {}
                           end
@@ -224,7 +224,7 @@ module JSONAPI
                                                           source_resource,
                                                           relationship_type,
                                                           related_resources,
-                                                          opts)
+                                                          **opts)
     end
 
     def create_resource

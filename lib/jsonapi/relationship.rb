@@ -6,7 +6,7 @@ module JSONAPI
 
     attr_accessor :_routed, :_warned_missing_route
 
-    def initialize(name, options = {})
+    def initialize(name, **options)
       @name = name.to_s
       @options = options
       @acts_as_set = options.fetch(:acts_as_set, false) == true
@@ -96,7 +96,7 @@ module JSONAPI
     class ToOne < Relationship
       attr_reader :foreign_key_on
 
-      def initialize(name, options = {})
+      def initialize(name, **options)
         super
         @class_name = options.fetch(:class_name, name.to_s.camelize)
         @foreign_key ||= "#{name}_id".to_sym
@@ -121,7 +121,7 @@ module JSONAPI
     class ToMany < Relationship
       attr_reader :reflect, :inverse_relationship
 
-      def initialize(name, options = {})
+      def initialize(name, **options)
         super
         @class_name = options.fetch(:class_name, name.to_s.camelize.singularize)
         @foreign_key ||= "#{name.to_s.singularize}_ids".to_sym

@@ -13,7 +13,7 @@ class ResponseDocumentTest < ActionDispatch::IntegrationTest
 
     JSONAPI::ResponseDocument.new(operation_results,
                                   serializer,
-                                  {
+                                  **{
                                     primary_resource_klass: resource_klass
                                   }
     )

@@ -1267,7 +1267,7 @@ class BreedResource < JSONAPI::Resource
     breeds
   end
 
-  def self.find_by_key(id, options = {})
+  def self.find_by_key(id, **options)
     BreedResource.new($breed_data.breeds[id.to_i], options[:context])
   end
 
@@ -1333,7 +1333,7 @@ class PreferencesResource < JSONAPI::Resource
 
   has_one :author, :foreign_key_on => :related
 
-  def self.find_records(filters, options = {})
+  def self.find_records(filters, **options)
     Preferences.limit(1)
   end
 end
@@ -1715,7 +1715,7 @@ module Api
 
       filter :name
 
-      def self.find_records(filters, options = {})
+      def self.find_records(filters, **options)
         rel = _model_class
         filters.each do |attr, filter|
           if attr.to_s == "id"
@@ -1807,7 +1807,7 @@ module Api
 
     class PostResource < PostResource
       # Test caching with SQL fragments
-      def self.records(options = {})
+      def self.records(**options)
         super.joins('INNER JOIN people on people.id = author_id')
       end
     end

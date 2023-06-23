@@ -2,7 +2,7 @@ module JSONAPI
   class Error
     attr_accessor :title, :detail, :id, :href, :code, :source, :links, :status, :meta
 
-    def initialize(options = {})
+    def initialize(**options)
       @title          = options[:title]
       @detail         = options[:detail]
       @id             = options[:id]
@@ -28,7 +28,7 @@ module JSONAPI
 
   class Warning
     attr_accessor :title, :detail, :code
-    def initialize(options = {})
+    def initialize(**options)
       @title          = options[:title]
       @detail         = options[:detail]
       @code           = if JSONAPI.configuration.use_text_errors
